@@ -1,6 +1,7 @@
 import React from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
-import { Col, ListGroup, Row } from 'react-bootstrap';
+import { Button, Col, ListGroup, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { getProductsThunk } from '../store/slices/products.slice';
@@ -21,8 +22,16 @@ const ProductsDetail = () => {
   
   const similarProducts = productsList.filter(product=>
     product.category.id === products.category.id)
+
+  const [rate, setRate] = useState('')
     
-    
+  const addIItem = () => {
+    const productsInCart = {
+      id: products.id ,
+      quantity: rate
+    }
+    console.log(productsInCart);
+  }
     
     // console.log(similarProducts)
 
@@ -30,6 +39,13 @@ const ProductsDetail = () => {
     <div>
       
       <h1>{products?.title}</h1>
+
+      <input 
+        type="text" 
+        value={rate}
+        onChange={e => setRate(e.target.value)}
+      />
+      <Button onClick={addIItem}>Add item</Button>
       <Row>
         <Col lg={9}>
           <img src={products?.productImgs[0]} alt="" className='img-fluid'/>
