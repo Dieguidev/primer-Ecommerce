@@ -5,74 +5,98 @@ import { Button, Col, ListGroup, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { getProductsThunk } from '../store/slices/products.slice';
+import { createPurchasesThunk } from '../store/slices/car.slice';
+
 
 const ProductsDetail = () => {
 
-  const {id} = useParams()
+  const { id } = useParams()
 
   const dispatch = useDispatch();
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(getProductsThunk())
-  },[])
+  }, [])
 
   const productsList = useSelector(state => state.products)
 
-  const products = productsList.find(product  => product.id === Number(id))
-  
-  const similarProducts = productsList.filter(product=>
+  const products = productsList.find(product => product.id === Number(id))
+
+  const similarProducts = productsList.filter(product =>
     product.category.id === products.category.id)
 
   const [rate, setRate] = useState('')
-    
+
   const addIItem = () => {
     const productsInCart = {
-      id: products.id ,
+      id: products.id,
       quantity: rate
     }
-    console.log(productsInCart);
+    dispatch(createPurchasesThunk(productsInCart))
   }
-    
-    // console.log(similarProducts)
+
+  // console.log(similarProducts)
 
   return (
     <div>
-      
-      <h1>{products?.title}</h1>
 
-      <input 
-        type="text" 
-        value={rate}
-        onChange={e => setRate(e.target.value)}
-      />
-      <Button onClick={addIItem}>Add item</Button>
+
       <Row>
-        <Col lg={9}>
-          <img src={products?.productImgs[0]} alt="" className='img-fluid'/>
+        <Col lg={4}>
+          <img
+            style={{ height: 500, objectFit: 'contain' }}
+            src={products?.productImgs[0]} alt="" className='img-fluid' />
+        </Col>
+        <Col lg={8}>
+          <h1>{products?.title}</h1>
           <p>{products?.description}</p>
+          <p>price <span style={{ fontSize: 25 }}>$ {products?.price}</span></p>
+          <input
+            placeholder='Quantity'
+            type="text"
+            value={rate}
+            onChange={e => setRate(e.target.value)}
+          />
+          <Button
+            variant='danger'
+            style={{ width: 62, borderRadius: 4 }}
+            onClick={addIItem}><i className="fa-solid fa-cart-shopping"></i>
+          </Button>
         </Col>
-        <Col lg={3}>
-          <h3>Similar Products</h3>
-          <ListGroup variant="flush">
-            {similarProducts.map(productItem => (
-                <ListGroup.Item>
-                  {productItem.id !==products.id && 
-                    <Link key={productItem.id} to={`/product/${productItem.id}`}>
-                      <img src={productItem.productImgs[0]} alt="" className='img-fluid'/>
-                      {productItem.title}
-                    </Link> 
-                  }
-                
-                </ListGroup.Item>
-            ))}
-            
-          </ListGroup>
-        </Col>
+
+      </Row>
+      <Row className='mt-5'>
+        <h4>Discover Similar Products</h4>
+        <ListGroup variant="flush">
+          {similarProducts.map(productItem => (
+            <ListGroup.Item 
+              style={{maxWidth: 300}}
+              key={productItem.id}>
+              {productItem.id !== products.id &&
+                <Link key={productItem.id} to={`/product/${productItem.id}`}>
+                  <img
+                    style={{ height: 150, objectFit: 'contain', marginTop: 10 }}
+                    src={productItem.productImgs[0]} alt="" className='img-fluid'
+                  />
+                  <p>{productItem.title}</p>
+                  <p style={{ marginTop: -10 }}>price</p>
+
+                  <p style={{ marginTop: -10 }}><b>$ {productItem.price}</b></p>
+                  <Button
+                    variant='danger'
+                    style={{ width: 62, borderRadius: 24, marginTop: -10 }}
+                  ><i className="fa-solid fa-cart-shopping"></i></Button>
+                </Link>
+              }
+
+            </ListGroup.Item>
+          ))}
+
+        </ListGroup>
 
       </Row>
 
 
-      
     </div>
   );
 };

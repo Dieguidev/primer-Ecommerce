@@ -10,6 +10,7 @@ import LoadingScreen from './components/LoadingScreen'
 import {useSelector} from 'react-redux'
 import { Container } from 'react-bootstrap'
 import ProtectedRoutes from './components/ProtectedRoutes'
+import CreateUser from './pages/CreateUser'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/product/:id' element={<ProductsDetail />}/>
+          <Route path='/createUser' element={<CreateUser/>} />
           <Route element={<ProtectedRoutes />}>
             <Route path='/purchases' element={<Purchages />}/>
           </Route>
