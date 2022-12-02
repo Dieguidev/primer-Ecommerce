@@ -8,8 +8,7 @@ import axios from 'axios';
 import Card from 'react-bootstrap/Card';
 import { Button, Col, Row, InputGroup, ListGroup } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
-
-
+import { createPurchasesThunk } from '../store/slices/car.slice';
 
 
 const Home = () => {
@@ -27,13 +26,22 @@ const Home = () => {
       .then(res => setCategoryList(res.data.data.categories))
   }, [])
 
+
+
+  const addIItem = () => {
+    const productsInCart = {
+      id: products.id,
+      quantity: 1
+    }
+    dispatch(createPurchasesThunk(productsInCart))
+  }
+
   // console.log(products)
 
   return (
     <div>
       <Row>
         <Col lg={3}>
-
           <ListGroup>
             {
               categoryList.map(category => (
@@ -41,11 +49,9 @@ const Home = () => {
                   {category.name}
                 </ListGroup.Item>
               ))}
-
-
-
           </ListGroup>
         </Col>
+        
         <Col lg={9}>
           <InputGroup className="mb-3" style={{ maxWidth: 700 }}>
             <Form.Control
@@ -60,14 +66,12 @@ const Home = () => {
               onClick={() => dispatch(filterNameProductsThunk(inputSearch))}
               variant="danger" id="button-addon2">
               <i className="fa-solid fa-magnifying-glass"></i>
-
             </Button>
           </InputGroup>
 
           <Row xs={1} md={2} lg={3} className="g-4">
             {products.map(product => (
               <div key={product.id}>
-
                 <Col>
                   <Card style={{ border:'none' }}>
 
@@ -87,8 +91,6 @@ const Home = () => {
                             variant='danger'
                             style={{ width: 62, borderRadius: 24 , marginTop: -10}}
                           ><i className="fa-solid fa-cart-shopping"></i></Button>
-
-
                         </Card.Text>
                       </Card.Body>
                     </Link>
@@ -97,15 +99,8 @@ const Home = () => {
               </div>
             ))}
           </Row>
-
         </Col>
-
       </Row>
-
-
-
-
-
     </div>
   );
 };
